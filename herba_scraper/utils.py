@@ -84,13 +84,13 @@ class Utils:
     def convert_size(size_str):
         ssize = size_str.strip().upper()
         if ssize.endswith("GB"):  # GB
-            return float(ssize[:-2]) * 1024 * 1024 * 1024
+            return int(float(ssize[:-2]) * 1024 * 1024 * 1024)
         elif ssize.endswith("MB"):  # MB
-            return float(ssize[:-2]) * 1024 * 1024
+            return int(float(ssize[:-2]) * 1024 * 1024)
         elif ssize.endswith("KB"):
-            return float(ssize[:-2]) * 1024
+            return int(float(ssize[:-2]) * 1024)
         elif ssize.endswith("B"):
-            return float(ssize[:-1])
+            return int(float(ssize[:-1].strip()))
         return int(ssize)
 
     @staticmethod

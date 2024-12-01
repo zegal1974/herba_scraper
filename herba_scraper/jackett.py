@@ -2,7 +2,6 @@ from bs4 import BeautifulSoup
 import requests
 import re
 
-
 class Jackett:
     def __init__(self, url, apikey):
         self.url = url

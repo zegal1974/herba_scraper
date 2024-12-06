@@ -1,5 +1,6 @@
 import os
 import re
+import requests
 
 from urllib.parse import urlparse, parse_qs
 
@@ -70,10 +71,12 @@ class Utils:
     @staticmethod
     def decode(movie_code):
         mcode = movie_code.upper()
-        match = re.search(r"^([A-Z\d]+)-(\d{2,})[A-Z]?[_-]?([A-Z\d-]*)?", mcode)
+        match = re.search(
+            r"^([A-Z\d]+)-(\d{2,})[A-Z]?[_-]?([A-Z\d-]*)?", mcode)
 
         if not match:
-            match = re.search(r"^([A-Z]+)(\d{2,})[A-Z]?[_-]?([A-Z\d-]*)?", mcode)
+            match = re.search(
+                r"^([A-Z]+)(\d{2,})[A-Z]?[_-]?([A-Z\d-]*)?", mcode)
 
         if match:
             return match.group(1).upper(), match.group(2), match.group(3)
@@ -118,3 +121,21 @@ class Utils:
         trackers = query_params.get("tr", [])
 
         return info_hash, display_name, trackers
+
+    # 下载文件
+    @staticmethod
+    def download_file(url, filename, hearders=None):
+        if os.path.isfile(filename) and os.path.getsize(filename) > 0:
+            return True
+
+        path = os.path.dirname(filename)
+        if not os.path.exists(path):
+            os.makedirs(path)
+
+        response = requests.get(url, stream=True, headers=hearders, timeout=10)
+        if response.status_code == 200:
+            with open(filename, 'wb') as f:
+                f.write(response.content)
+            return True
+        else:
+            return False

@@ -1,8 +1,8 @@
-
+from lxml import etree
 from herba_scraper.javhub.scraper import JavhubScraper
 
 
-class TestJavHubScraper:
+class TestJavHubScraperBase:
     def setup_method(self):
         self.scraper = JavhubScraper("https://example.com")
 
@@ -23,3 +23,22 @@ class TestJavHubScraper:
     def test_url_movie(self):
         assert self.scraper.url_movie(
             'ABC-123') == "https://example.com/ABC-123"
+
+
+class TestJavHubScraperParse:
+    def setup_method(self):
+        self.scraper = JavhubScraper("https://example.com")
+
+        file = open('tests/files/movie.html', 'r', encoding='utf-8')
+        parser = etree.HTMLParser()
+        self.root = etree.fromstring(file.read(), parser)
+        # root = self.scraper.build_element(file.read())
+        # self.doc = etree.ElementTree(root)
+
+    def test_parse_movie(self):
+        data = self.scraper.parse_movie(self.root)
+
+        assert data['cover'] == '/pics/cover/9zf8_b.jpg'
+        assert data['name'] == 'テニス終わりの汗だく若妻つむぎさんに密着誘惑で痴女られた昼下がり 明里つむぎ'
+        # assert data['gid'] == '55976713876'
+        pass
